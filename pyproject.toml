@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "defectinspect"
+version = "0.1.0"
+description = "End-to-end industrial surface defect inspection: data pipeline, PyTorch training, ONNX, FastAPI, Docker"
+authors = [{ name = "Md. Musfiqur Rahman", email = "musfiqurtonmoy@gmail.com" }]
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+  "numpy",
+  "pillow",
+  "pyyaml",
+  "sqlalchemy>=2.0",
+  "onnxruntime",
+  "fastapi",
+  "python-multipart",
+  "uvicorn",
+]
+
+[project.optional-dependencies]
+train = ["torch", "torchvision", "onnx", "scikit-learn", "matplotlib"]
+dev = ["pytest", "httpx"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]

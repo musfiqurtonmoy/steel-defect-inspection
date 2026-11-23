@@ -1,0 +1,21 @@
+# Lighter backbone for CPU or edge deployment. Compare against default.yaml.
+data:
+  raw_dir: data/raw
+  db_url: sqlite:///data/manifest.db
+  image_size: 224
+  min_side: 32
+  val_frac: 0.15
+  test_frac: 0.15
+  seed: 42
+
+train:
+  arch: mobilenet_v3_small
+  pretrained: true
+  epochs: 20
+  batch_size: 64
+  lr: 0.001
+  weight_decay: 0.0001
+  patience: 5
+  num_workers: 2
+  seed: 42
+  out_dir: artifacts

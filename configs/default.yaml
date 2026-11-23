@@ -1,0 +1,22 @@
+# Default run on NEU-CLS (6 classes x 300 grayscale 200x200 images).
+# Sized for a 4 GB GPU (GTX 1050 Ti). Lower batch_size if you hit out-of-memory.
+data:
+  raw_dir: data/raw
+  db_url: sqlite:///data/manifest.db
+  image_size: 224
+  min_side: 32
+  val_frac: 0.15
+  test_frac: 0.15
+  seed: 42
+
+train:
+  arch: resnet18
+  pretrained: true
+  epochs: 15
+  batch_size: 32
+  lr: 0.0003
+  weight_decay: 0.0001
+  patience: 4
+  num_workers: 2
+  seed: 42
+  out_dir: artifacts

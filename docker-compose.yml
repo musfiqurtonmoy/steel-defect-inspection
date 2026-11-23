@@ -1,0 +1,11 @@
+services:
+  inspector:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      LOW_CONF: "0.6"
+    volumes:
+      - predictions:/app/data   # prediction log survives container restarts
+volumes:
+  predictions:
