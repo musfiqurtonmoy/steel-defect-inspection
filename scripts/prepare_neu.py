@@ -1,13 +1,12 @@
 """Arrange a downloaded copy of NEU-CLS into data/raw/<class>/.
 
-Handles the two layouts in circulation:
-  1. Original NEU-CLS: one flat folder of files named Cr_1.bmp, In_1.bmp, Pa_1.bmp,
-     PS_1.bmp, RS_1.bmp, Sc_1.bmp ...
-  2. Kaggle "NEU Metal Surface Defects Data": train/ valid/ test/ each holding
-     Crazing/ Inclusion/ Patches/ Pitted/ Rolled/ Scratches/
+Handles the layouts in circulation:
+  1. Original NEU-CLS: one flat folder of files named Cr_1.bmp, In_1.bmp, ...
+  2. Kaggle "NEU Metal Surface Defects Data": train/ valid/ test/ with class folders
+  3. Files named by full class name, e.g. crazing_1.jpg, rolled-in scale (1).jpg
 
-Any pre-made split is deliberately merged. ingest.py then re-splits by content
-hash, so the split is deterministic and duplicates cannot leak across splits.
+Any pre-made split is merged. ingest.py re-splits by content hash, so the split
+is deterministic and duplicates cannot leak across splits.
 
 Usage:
     python scripts/prepare_neu.py --src ~/Downloads/NEU-CLS --dst data/raw
@@ -16,6 +15,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import re
 import shutil
 from pathlib import Path
 
@@ -24,18 +24,18 @@ CANON = {
     "in": "inclusion", "inclusion": "inclusion",
     "pa": "patches", "patches": "patches",
     "ps": "pitted_surface", "pitted": "pitted_surface", "pitted_surface": "pitted_surface",
-    "rs": "rolled-in_scale", "rolled": "rolled-in_scale", "rolled-in_scale": "rolled-in_scale",
+    "rs": "rolled-in_scale", "rolled": "rolled-in_scale", "rolled-in": "rolled-in_scale", "rolled-in_scale": "rolled-in_scale",
     "sc": "scratches", "scratches": "scratches",
 }
 EXTS = {".bmp", ".jpg", ".jpeg", ".png"}
 
 
 def label_for(path: Path, src: Path) -> str | None:
-    # Folder name first (layout 2), then file-name prefix (layout 1).
+    # Folder name first (layout 2), then the leading letters of the file name.
     for part in path.relative_to(src).parts[:-1][::-1]:
         if part.lower() in CANON:
             return CANON[part.lower()]
-    prefix = path.stem.split("_")[0].lower()
+    prefix = re.match(r"[A-Za-z]*", path.stem).group(0).lower()
     return CANON.get(prefix)
 
 

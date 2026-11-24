@@ -1,0 +1,46 @@
+{
+  "version_id": "2abdc6951f3a",
+  "files_scanned": 1800,
+  "valid": 1799,
+  "rejected": {
+    "duplicate": 1
+  },
+  "per_class": {
+    "crazing": {
+      "train": 210,
+      "val": 45,
+      "test": 45
+    },
+    "inclusion": {
+      "train": 210,
+      "test": 45,
+      "val": 45
+    },
+    "patches": {
+      "train": 209,
+      "test": 45,
+      "val": 45
+    },
+    "pitted_surface": {
+      "test": 45,
+      "train": 210,
+      "val": 45
+    },
+    "rolled-in_scale": {
+      "train": 210,
+      "val": 45,
+      "test": 45
+    },
+    "scratches": {
+      "train": 210,
+      "val": 45,
+      "test": 45
+    }
+  },
+  "modes": {
+    "RGB": 1799
+  },
+  "sizes": {
+    "200x200": 1799
+  }
+}

@@ -7,3 +7,6 @@ artifacts/
 model/
 !reports/
 *.db
+NEU-CLS/
+NEU-CLS/
+NEU-CLS.zip

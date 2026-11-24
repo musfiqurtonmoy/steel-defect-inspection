@@ -73,10 +73,23 @@ curl -F "file=@data/raw/scratches/<some_image>.bmp" http://localhost:8000/predic
 
 ## Results
 
-Filled from `scripts/results_table.py` after training on NEU-CLS.
-
 <!-- RESULTS -->
-_Run `python scripts/results_table.py artifacts/*/` and paste the table here._
+Dataset version `2abdc6951f3a`: 1,799 images after the ingest checks removed **one exact duplicate** found in the public NEU-CLS release. Held-out test split: 270 images, 45 per class. Trained on a GTX 1050 Ti (4 GB).
+
+| Model | Test accuracy | Test macro-F1 | ONNX size | CPU latency, ONNX Runtime (p50 / p95) | CPU latency, PyTorch (p50) | Train time |
+|---|---|---|---|---|---|---|
+| ResNet-18 | 99.26% (268/270) | 0.993 | 44.7 MB | 11.2 / 11.4 ms | 28.4 ms | 404 s |
+| MobileNetV3-Small | **100% (270/270)** | **1.000** | **6.1 MB** | **1.2 / 1.4 ms** | 10.3 ms | 819 s |
+
+Batch-1 latency on an Intel Core CPU. ONNX outputs match PyTorch to within 3×10⁻⁶ with identical predictions.
+
+**What the numbers say**
+
+- **Serve with ONNX Runtime.** It is 2.5× (ResNet-18) to 8.4× (MobileNetV3) faster than PyTorch on the same CPU, with no loss of accuracy.
+- **The small model wins here.** MobileNetV3 matches or beats ResNet-18 while being 7× smaller and 9× faster, which makes it the choice for an edge box on a production line.
+- **Error analysis (ResNet-18, 2 errors).** An inclusion predicted as pitted surface at 0.50 confidence would be caught by the `LOW_CONF` review flag. A scratch predicted as inclusion at 0.95 confidence would not. Confidence thresholds reduce risk but do not remove it.
+- **Training stability.** MobileNetV3 at learning rate 1e-3 dipped to 17% validation accuracy at epoch 2 before recovering by epoch 10, a known batch-norm sensitivity. A warm-up or lower learning rate would smooth it.
+- **Caveat.** NEU-CLS is close to saturated and the test split is small: one error moves accuracy by 0.37 points. Harder data (localisation on NEU-DET, lighting and blur augmentation) is the honest next test.
 <!-- /RESULTS -->
 
 ## Design choices
